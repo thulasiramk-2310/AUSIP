@@ -1,166 +1,250 @@
-# StrategicAI — Competitive Intelligence Scraper
+# AUSIP - AI Unicorn Stratergy Intelligent Platform
 
-> **Step 1** of the StrategicAI pipeline: automatically collect, clean, classify, and structure technology news from major tech company blogs for Elasticsearch + AI agent ingestion.
+> A comprehensive AI-powered platform for competitive intelligence, strategic analysis, and data-driven insights using Elasticsearch and advanced analytics.
+
+---
+
+## Overview
+
+AUSIP combines powerful data scraping, intelligent analysis, and interactive visualization to help organizations make informed strategic decisions. The platform integrates with Elasticsearch and Kibana to provide real-time insights and AI-driven recommendations.
+
+---
+
+## Project Structure
+
+```
+AUSIP/
+├── frontend/          # React + TypeScript dashboard
+│   ├── src/
+│   │   ├── components/    # Reusable UI components
+│   │   ├── pages/         # Application pages
+│   │   ├── api/           # API services
+│   │   └── ...
+│   └── ...
+├── backend/           # FastAPI Python backend
+│   ├── app/
+│   │   ├── services/      # Business logic & AI agents
+│   │   ├── models/        # Data models
+│   │   └── main.py        # API entry point
+│   └── ...
+└── README.md
+```
 
 ---
 
 ## Quick Start
 
-### 1. Install Dependencies
+### 1. Backend Setup
 
 ```bash
-pip install requests beautifulsoup4 pandas
+cd backend
+pip install -r requirements.txt
 ```
 
-Optional (for YAML configs):
+Configure your environment variables:
 ```bash
-pip install pyyaml
+# Create .env file with:
+ELASTICSEARCH_URL=your_elasticsearch_url
+ELASTICSEARCH_API_KEY=your_api_key
+OPENAI_API_KEY=your_openai_key  # Optional for AI features
 ```
 
-### 2. Run the Scraper
+Start the backend server:
+```bash
+python -m uvicorn app.main:app --reload
+```
+
+The API will be available at `http://localhost:8000`
+
+### 2. Frontend Setup
 
 ```bash
-# Full run with default sources
-python scraper.py
-
-# With custom config & dev-mode limit
-python scraper.py --config sources.json --limit 50
-
-# Only articles published after a date
-python scraper.py --config sources.json --since 2025-01-01
-
-# Debug logging
-python scraper.py --config sources.json --limit 10 --debug
-
-# Run built-in test (no network calls)
-python scraper.py --test
+cd frontend
+npm install
 ```
 
-### 3. CLI Options
+Start the development server:
+```bash
+npm run dev
+```
 
-| Flag | Description |
-|---|---|
-| `--config`, `-c` | Path to JSON/YAML source config file |
-| `--limit`, `-l` | Max articles per source (dev mode) |
-| `--since`, `-s` | Only articles newer than `YYYY-MM-DD` |
-| `--output`, `-o` | Output directory (default: `.`) |
-| `--rate-limit` | Seconds between requests per domain (default: `2.0`) |
-| `--debug` | Enable debug-level logging |
-| `--test` | Run built-in test and exit |
+The application will be available at `http://localhost:5173`
+
+### 3. Access the Platform
+
+- **Frontend Dashboard**: http://localhost:5173
+- **Backend API**: http://localhost:8000
+- **API Documentation**: http://localhost:8000/docs
 
 ---
 
-## Output Files
+## Features
 
-| File | Description |
-|---|---|
-| `tech_news_raw.csv` | All scraped articles |
-| `important_tech_news.csv` | Filtered — non-General categories/insights only |
-| `tech_news.jsonl` | One JSON object per line — **Elasticsearch-ready** |
-| `company_strategy.csv` | Editable company strategy profiles |
+### Frontend
+- **Interactive Dashboard**: Real-time analytics and visualizations
+- **AI Chat Interface**: Natural language queries powered by AI agents
+- **Alerts Management**: Monitor and manage Kibana alerts
+- **Reports Generation**: Export comprehensive analysis reports
+- **User Authentication**: Secure login and user management
+- **Responsive Design**: Modern UI with Tailwind CSS
 
-### JSONL Schema
-
-Each line in `tech_news.jsonl` contains:
-
-```json
-{
-  "company": "Google",
-  "title": "Announcing New AI Features",
-  "url": "https://blog.google/...",
-  "published_date": "2025-06-15",
-  "categories": ["AI_ML", "Cloud"],
-  "insight_type": "Product_Launch",
-  "insight_keywords": ["introducing", "now available"],
-  "summary": "Google introduces powerful new...",
-  "full_text": "Today we are introducing...",
-  "crawl_date": "2026-02-25",
-  "author": "Sundar Pichai",
-  "tags": ["AI", "Cloud"],
-  "confidence": 0.90,
-  "matched_category_keywords": {"AI_ML": ["ai", "machine learning"], "Cloud": ["cloud"]}
-}
-```
+### Backend
+- **FastAPI Framework**: High-performance async API
+- **Elasticsearch Integration**: Advanced search and analytics
+- **AI Agent Services**: Intelligent data analysis and recommendations
+- **Kibana Alerts**: Automated alert monitoring and management
+- **Report Generation**: Dynamic PDF and data export
+- **RESTful API**: Well-documented endpoints with OpenAPI
 
 ---
 
-## Source Configuration
+## Technology Stack
 
-Edit `sources.json` to add or remove sources:
+### Frontend
+- React 18
+- TypeScript
+- Vite
+- Tailwind CSS
+- Recharts (Data Visualization)
+- Axios
 
-```json
-[
-  {"name": "Google",    "url": "https://blog.google/",          "enabled": true},
-  {"name": "Microsoft", "url": "https://blogs.microsoft.com/",  "enabled": true},
-  {"name": "AWS",       "url": "https://aws.amazon.com/blogs/", "enabled": true}
-]
-```
-
-Set `"enabled": false` to skip a source without removing it.
-
----
-
-## Enabling Embeddings
-
-The scraper includes a `create_embeddings()` stub. To activate:
-
-### Option A — OpenAI Embeddings
-
-```bash
-pip install openai
-export OPENAI_API_KEY="sk-..."        # Linux/Mac
-set OPENAI_API_KEY=sk-...             # Windows
-```
-
-Then uncomment the OpenAI implementation in `scraper.py` → `create_embeddings()`.
-
-### Option B — Local Sentence-Transformers (no API key needed)
-
-```bash
-pip install sentence-transformers
-```
-
-Then uncomment the sentence-transformers implementation in `scraper.py` → `create_embeddings()`.
+### Backend
+- Python 3.9+
+- FastAPI
+- Elasticsearch
+- Pydantic
+- SQLAlchemy
+- OpenAI API (Optional)
 
 ---
 
-## Pipeline Architecture
+## API Endpoints
 
+### Authentication
+- `POST /api/auth/register` - User registration
+- `POST /api/auth/login` - User authentication
+- `POST /api/auth/logout` - User logout
+
+### Data & Analysis
+- `POST /api/ask` - AI-powered query interface
+- `GET /api/alerts` - Fetch Kibana alerts
+- `POST /api/reports/generate` - Generate analysis reports
+
+### Health Check
+- `GET /health` - Service health status
+
+For complete API documentation, visit http://localhost:8000/docs when the backend is running.
+
+---
+
+## Configuration
+
+### Backend Environment Variables
+
+Create a `.env` file in the `backend/` directory:
+
+```env
+# Elasticsearch Configuration
+ELASTICSEARCH_URL=https://your-elasticsearch-instance
+ELASTICSEARCH_API_KEY=your_api_key
+
+# OpenAI Configuration (Optional)
+OPENAI_API_KEY=sk-your-openai-key
+
+# Database Configuration
+DATABASE_URL=sqlite:///./ausip.db
+
+# Security
+SECRET_KEY=your-secret-key-here
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
 ```
-┌──────────────┐     ┌───────────────┐     ┌──────────────┐
-│  sources.json │────▶│  scraper.py   │────▶│  Output Files │
-│  (config)     │     │               │     │  .csv / .jsonl │
-└──────────────┘     │  fetch_index  │     └───────┬──────┘
-                      │  parse_index  │             │
-                      │  fetch_article│             ▼
-                      │  parse_article│     ┌──────────────┐
-                      │  classify     │     │ Elasticsearch │
-                      │  extract_ins. │     │  (Step 2)     │
-                      │  to_jsonl     │     └───────┬──────┘
-                      └───────────────┘             │
-                                                    ▼
-                                            ┌──────────────┐
-                                            │  AI Agent     │
-                                            │  (Step 3)     │
-                                            └──────────────┘
+
+### Frontend Environment Variables
+
+Create a `.env` file in the `frontend/` directory:
+
+```env
+VITE_API_URL=http://localhost:8000
 ```
 
 ---
 
-## Categories & Insight Types
+## Development
 
-### Categories (multi-label)
-`AI_ML` · `Cloud` · `Cybersecurity` · `Data_Analytics` · `Automation` · `Emerging_Tech` · `Government_Policy` · `Skills_Jobs` · `Business_Strategy` · `General`
+### Running Tests
 
-### Insight Types
-`Product_Launch` · `Partnership` · `Acquisition` · `Investment` · `Research` · `Cloud_Update` · `Security_Alert` · `Regulation_Policy` · `Developer_Tool` · `Training_Cert` · `Other`
+Backend tests:
+```bash
+cd backend
+pytest
+```
+
+Frontend tests:
+```bash
+cd frontend
+npm test
+```
+
+### Building for Production
+
+Frontend build:
+```bash
+cd frontend
+npm run build
+```
+
+### Code Style
+
+The project follows standard Python and TypeScript/React conventions. Use ESLint and Prettier for frontend code formatting.
 
 ---
 
-## Testing
+## Architecture
 
-```bash
-python scraper.py --test
+```
+┌─────────────────┐
+│  React Frontend │
+│  (Port 5173)    │
+└────────┬────────┘
+         │
+         │ HTTP/REST
+         ▼
+┌─────────────────┐
+│  FastAPI Backend│
+│  (Port 8000)    │
+└────────┬────────┘
+         │
+         ├──────────────┐
+         ▼              ▼
+┌──────────────┐  ┌────────────┐
+│ Elasticsearch│  │  OpenAI    │
+│   Kibana     │  │  API       │
+└──────────────┘  └────────────┘
 ```
 
-Runs `test_parse_sample_html()` — a self-contained test on a hardcoded HTML snippet that validates extraction, classification, insight detection, and cleaning.
+---
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+---
+
+## License
+
+This project is part of AUSIP - AI Unicorn Stratergy Intelligent Platform.
+
+---
+
+## Support
+
+For issues and questions:
+- Create an issue in the repository
+- Check the documentation at `/docs`
+- Review API documentation at http://localhost:8000/docs
+

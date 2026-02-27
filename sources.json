@@ -1,0 +1,17 @@
+[
+  {
+    "name": "Google",
+    "url": "https://blog.google/",
+    "enabled": true
+  },
+  {
+    "name": "Microsoft",
+    "url": "https://blogs.microsoft.com/",
+    "enabled": true
+  },
+  {
+    "name": "AWS",
+    "url": "https://aws.amazon.com/blogs/",
+    "enabled": true
+  }
+]

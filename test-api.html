@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Connection Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #0F172A;
+            color: white;
+        }
+        button {
+            background: #3B82F6;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #2563EB;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #1E293B;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .success { border-left: 4px solid #10B981; }
+        .error { border-left: 4px solid #EF4444; }
+        .info { border-left: 4px solid #3B82F6; }
+    </style>
+</head>
+<body>
+    <h1>🔧 API Connection Test</h1>
+    <p>Testing connection to backend at <code>http://localhost:8000</code></p>
+    
+    <button onclick="testHealthEndpoint()">1. Test Health Endpoint</button>
+    <button onclick="testAskEndpoint()">2. Test Ask Endpoint</button>
+    <button onclick="testCORS()">3. Test CORS</button>
+    
+    <div id="results"></div>
+
+    <script>
+        const resultsDiv = document.getElementById('results');
+        
+        function addResult(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `result ${type}`;
+            div.textContent = message;
+            resultsDiv.appendChild(div);
+        }
+        
+        async function testHealthEndpoint() {
+            resultsDiv.innerHTML = '';
+            addResult('Testing /health endpoint...', 'info');
+            
+            try {
+                const response = await fetch('http://localhost:8000/health');
+                const data = await response.json();
+                addResult(`✓ Health Check Success!\nStatus: ${response.status}\nResponse: ${JSON.stringify(data, null, 2)}`, 'success');
+            } catch (error) {
+                addResult(`✗ Health Check Failed!\nError: ${error.message}\n\nPossible causes:\n- Backend not running\n- Wrong URL\n- CORS issue`, 'error');
+            }
+        }
+        
+        async function testAskEndpoint() {
+            resultsDiv.innerHTML = '';
+            addResult('Testing /ask endpoint with question...', 'info');
+            
+            try {
+                const response = await fetch('http://localhost:8000/ask', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        question: 'What are AI unicorns?'
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                addResult(`✓ Ask Endpoint Success!\nStatus: ${response.status}\nResponse: ${JSON.stringify(data, null, 2)}`, 'success');
+            } catch (error) {
+                addResult(`✗ Ask Endpoint Failed!\nError: ${error.message}\n\nCheck:\n- Is backend running on port 8000?\n- Check browser console for CORS errors`, 'error');
+            }
+        }
+        
+        async function testCORS() {
+            resultsDiv.innerHTML = '';
+            addResult('Testing CORS headers...', 'info');
+            
+            try {
+                const response = await fetch('http://localhost:8000/health', {
+                    method: 'OPTIONS'
+                });
+                
+                const corsHeaders = {
+                    'Access-Control-Allow-Origin': response.headers.get('Access-Control-Allow-Origin'),
+                    'Access-Control-Allow-Methods': response.headers.get('Access-Control-Allow-Methods'),
+                    'Access-Control-Allow-Headers': response.headers.get('Access-Control-Allow-Headers'),
+                };
+                
+                addResult(`CORS Headers:\n${JSON.stringify(corsHeaders, null, 2)}`, 'info');
+                
+                if (corsHeaders['Access-Control-Allow-Origin']) {
+                    addResult('✓ CORS is configured', 'success');
+                } else {
+                    addResult('⚠ CORS might not be configured properly', 'error');
+                }
+            } catch (error) {
+                addResult(`✗ CORS Test Failed!\nError: ${error.message}`, 'error');
+            }
+        }
+    </script>
+</body>
+</html>
